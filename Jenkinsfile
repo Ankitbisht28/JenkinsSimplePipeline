@@ -1,16 +1,11 @@
 pipeline {
     agent any
-    environment {
-        SSH_USER = 'ubuntu'
-        SERVER = '43.205.128.29'
-        REMOTE_DIR = '~/jenkins-test'
-    }
     stages {
         stage('Make directory') {
             steps {
                 script {
                     try {
-                        sh "ssh ${SSH_USER}@${SERVER} mkdir -p ${REMOTE_DIR}"
+                        sh "mkdir ~/jenkins-test"
                     } catch (Exception e) {
                         echo "Failed to make directory"
                     }
@@ -19,27 +14,25 @@ pipeline {
         }
         stage('Make files') {
             steps {
-                script {
-                    sh "touch ${REMOTE_DIR}/file1"
-                }
+                sh 'touch ~/jenkins-test/file1'
             }
         }
         stage('Build') {
             steps {
                 echo 'Building...'
-                sh "ssh ${SSH_USER}@${SERVER} ls -la ${REMOTE_DIR}"
+                sh 'ls -la ~/jenkins-test'
             }
         }
         stage('Test') {
             steps {
                 echo 'Testing...'
-                sh "ssh ${SSH_USER}@${SERVER} pwd"
+                sh 'pwd'
             }
         }
         stage('Deploy') {
             steps {
                 echo 'Deploying...'
-                sh "ssh ${SSH_USER}@${SERVER} mv ${REMOTE_DIR}/file1 ${REMOTE_DIR}/file1_deployed"
+                sh 'mv ~/jenkins-test/file1 ~/jenkins-test/file1_deployed'
             }
         }
     }
